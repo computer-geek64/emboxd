@@ -1,0 +1,6 @@
+users:
+  - emby:
+      username: john
+    letterboxd:
+      username: john_doe
+      password: 'password'

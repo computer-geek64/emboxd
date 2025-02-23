@@ -1,2 +1,3 @@
-# emby-letterboxd-livesync
-Live sync server for logging watched movies on Emby to Letterboxd
+# EmBoxd
+
+Live sync server for updating Letterboxd with movies watched on Emby
