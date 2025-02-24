@@ -81,31 +81,17 @@ func (a *Api) postEmbyWebhook(context *gin.Context) {
 			Metadata: metadata,
 			Watched:  false,
 		})
-	case "playback.start":
+	case "playback.start", "playback.unpause":
 		notificationProcessor.ProcessPlaybackNotification(notification.PlaybackNotification{
 			Metadata: metadata,
-			Action:   notification.Start,
+			Playing:  true,
 			Position: convertTicksToDuration(embyNotif.PlaybackInfo.PositionTicks),
 			Runtime:  convertTicksToDuration(embyNotif.Item.RuntimeTicks),
 		})
-	case "playback.unpause":
+	case "playback.stop", "playback.pause":
 		notificationProcessor.ProcessPlaybackNotification(notification.PlaybackNotification{
 			Metadata: metadata,
-			Action:   notification.Start,
-			Position: convertTicksToDuration(embyNotif.PlaybackInfo.PositionTicks),
-			Runtime:  convertTicksToDuration(embyNotif.Item.RuntimeTicks),
-		})
-	case "playback.pause":
-		notificationProcessor.ProcessPlaybackNotification(notification.PlaybackNotification{
-			Metadata: metadata,
-			Action:   notification.Start,
-			Position: convertTicksToDuration(embyNotif.PlaybackInfo.PositionTicks),
-			Runtime:  convertTicksToDuration(embyNotif.Item.RuntimeTicks),
-		})
-	case "playback.stop":
-		notificationProcessor.ProcessPlaybackNotification(notification.PlaybackNotification{
-			Metadata: metadata,
-			Action:   notification.Start,
+			Playing:  false,
 			Position: convertTicksToDuration(embyNotif.PlaybackInfo.PositionTicks),
 			Runtime:  convertTicksToDuration(embyNotif.Item.RuntimeTicks),
 		})

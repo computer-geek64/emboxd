@@ -22,18 +22,9 @@ type WatchedNotification struct {
 	Watched bool
 }
 
-type PlaybackAction int
-
-const (
-	Start PlaybackAction = iota
-	Play
-	Pause
-	Stop
-)
-
 type PlaybackNotification struct {
 	Metadata
-	Action   PlaybackAction
+	Playing  bool
 	Position time.Duration
 	Runtime  time.Duration
 }
