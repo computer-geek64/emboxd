@@ -20,7 +20,7 @@ type embyNotification struct {
 		Name string `json:"Name"`
 	} `json:"User"`
 	Item struct {
-		RuntimeTicks int64 `json:"PositionTicks"`
+		RuntimeTicks int64 `json:"RunTimeTicks"`
 		ProviderIds  struct {
 			Imdb string `json:"Imdb"`
 		} `json:"ProviderIds"`
