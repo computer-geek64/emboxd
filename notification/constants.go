@@ -20,6 +20,7 @@ type Metadata struct {
 type WatchedNotification struct {
 	Metadata
 	Watched bool
+	Runtime time.Duration
 }
 
 type PlaybackNotification struct {
