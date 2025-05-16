@@ -3,7 +3,7 @@ ENTRYPOINT ["emboxd"]
 CMD ["-c", "/config/config.yaml"]
 
 WORKDIR /code
-COPY go.mod go.sum .
+COPY go.mod go.sum ./
 RUN go mod download
 
 RUN go install github.com/playwright-community/playwright-go/cmd/playwright
