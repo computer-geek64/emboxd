@@ -21,12 +21,17 @@ func main() {
 	var conf = config.Load(configFilename)
 
 	var notificationProcessorByEmbyUsername = make(map[string]*notification.Processor, len(conf.Users))
+	var letterboxdWorkers = make(map[string]*letterboxd.Worker, len(conf.Users))
 	for _, user := range conf.Users {
-		var letterboxdWorker = letterboxd.NewWorker(user.Letterboxd.Username, user.Letterboxd.Password)
-		letterboxdWorker.Start()
+		var letterboxdWorker, workerExists = letterboxdWorkers[user.Letterboxd.Username]
+		if !workerExists {
+			var worker = letterboxd.NewWorker(user.Letterboxd.Username, user.Letterboxd.Password)
+			worker.Start()
+			letterboxdWorker = &worker
+			letterboxdWorkers[user.Letterboxd.Username] = letterboxdWorker
+		}
 
 		var notificationProcessor = notification.NewProcessor(letterboxdWorker.HandleEvent)
-
 		notificationProcessorByEmbyUsername[user.Emby.Username] = &notificationProcessor
 	}
 
