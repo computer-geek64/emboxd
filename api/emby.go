@@ -20,6 +20,7 @@ type embyNotification struct {
 		Name string `json:"Name"`
 	} `json:"User"`
 	Item struct {
+		Type string `json:"Type"`
 		RuntimeTicks int64 `json:"RunTimeTicks"`
 		ProviderIds  struct {
 			Imdb string `json:"Imdb"`
@@ -52,8 +53,8 @@ func (a *Api) postEmbyWebhook(context *gin.Context) {
 		return
 	}
 
-	if embyNotif.Item.ProviderIds.Imdb == "" {
-		// Only handle valid IMDB entries
+	if embyNotif.Item.Type != "Movie" || embyNotif.Item.ProviderIds.Imdb == "" {
+		// Only handle movies and valid IMDB entries
 		context.AbortWithStatus(200)
 		return
 	}
