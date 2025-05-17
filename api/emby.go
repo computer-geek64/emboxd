@@ -75,11 +75,13 @@ func (a *Api) postEmbyWebhook(context *gin.Context) {
 		notificationProcessor.ProcessWatchedNotification(notification.WatchedNotification{
 			Metadata: metadata,
 			Watched:  true,
+			Runtime:  convertTicksToDuration(embyNotif.Item.RuntimeTicks),
 		})
 	case "item.markunplayed":
 		notificationProcessor.ProcessWatchedNotification(notification.WatchedNotification{
 			Metadata: metadata,
 			Watched:  false,
+			Runtime:  convertTicksToDuration(embyNotif.Item.RuntimeTicks),
 		})
 	case "playback.start", "playback.unpause":
 		notificationProcessor.ProcessPlaybackNotification(notification.PlaybackNotification{
@@ -100,6 +102,7 @@ func (a *Api) postEmbyWebhook(context *gin.Context) {
 			notificationProcessor.ProcessWatchedNotification(notification.WatchedNotification{
 				Metadata: metadata,
 				Watched:  true,
+				Runtime:  convertTicksToDuration(embyNotif.Item.RuntimeTicks),
 			})
 		}
 	default:
