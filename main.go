@@ -19,6 +19,7 @@ func main() {
 	flag.BoolVar(&verbose, "verbose", false, "Enable debug logging")
 	flag.StringVar(&configFilename, "c", "config/config.yaml", "Path to configuration file")
 	flag.StringVar(&configFilename, "config", "config/config.yaml", "Path to configuration file")
+	flag.Parse()
 
 	logging.Configure(verbose)
 	var conf = config.Load(configFilename)
