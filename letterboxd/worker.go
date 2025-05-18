@@ -11,8 +11,8 @@ const _EVENT_BUFFER_SIZE int = 10
 type Action int
 
 const (
-	FilmWatched Action = iota
-	FilmUnwatched
+	FilmUnwatched Action = iota
+	FilmWatched
 	FilmLogged
 )
 

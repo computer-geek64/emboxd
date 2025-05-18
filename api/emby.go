@@ -2,6 +2,7 @@ package api
 
 import (
 	"time"
+	"log/slog"
 )
 
 import "github.com/gin-gonic/gin"
@@ -42,6 +43,7 @@ func convertTicksToDuration(ticks int64) time.Duration {
 func (a *Api) postEmbyWebhook(context *gin.Context) {
 	var embyNotif embyNotification
 	if err := context.BindJSON(&embyNotif); err != nil {
+		slog.Error("Malformed webhook notification payload")
 		context.AbortWithError(400, err)
 		return
 	}
@@ -49,18 +51,21 @@ func (a *Api) postEmbyWebhook(context *gin.Context) {
 	var notificationProcessor, knownEmbyUser = a.notificationProcessorByEmbyUsername[embyNotif.User.Name]
 	if !knownEmbyUser {
 		// Ignore notifications from unconfigured users
+		slog.Debug("No Letterboxd account for Emby user, ignoring notification", slog.Group("emby", "user", embyNotif.User.Name))
 		context.AbortWithStatus(200)
 		return
 	}
 
 	if embyNotif.Item.Type != "Movie" || embyNotif.Item.ProviderIds.Imdb == "" {
 		// Only handle movies and valid IMDB entries
+		slog.Debug("Media item is not a valid movie, ignoring notification", slog.Group("emby", "user", embyNotif.User.Name, "type", embyNotif.Item.Type), slog.Group("imdb", "id", embyNotif.Item.ProviderIds.Imdb))
 		context.AbortWithStatus(200)
 		return
 	}
 
 	var eventTime, timeErr = time.Parse(_EMBY_TIME_LAYOUT, embyNotif.Date)
 	if timeErr != nil {
+		slog.Error("Failed to parse time from Emby notification", slog.Group("emby", "user", embyNotif.User.Name, "time", embyNotif.Date))
 		context.AbortWithError(400, timeErr)
 		return
 	}
