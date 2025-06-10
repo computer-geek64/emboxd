@@ -1,8 +1,10 @@
 package config
 
-import "os"
+import (
+	"os"
 
-import "gopkg.in/yaml.v3"
+	"gopkg.in/yaml.v3"
+)
 
 type letterboxd struct {
 	Username string `yaml:"username"`
@@ -13,9 +15,14 @@ type emby struct {
 	Username string `yaml:"username"`
 }
 
+type plex struct {
+	Username string `yaml:"username"`
+}
+
 type user struct {
 	Letterboxd letterboxd `yaml:"letterboxd"`
 	Emby       emby       `yaml:"emby"`
+	Plex       plex       `yaml:"plex"`
 }
 
 type Config struct {

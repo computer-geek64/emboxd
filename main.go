@@ -2,9 +2,7 @@ package main
 
 import (
 	"flag"
-)
 
-import (
 	"github.com/computer-geek64/emboxd/api"
 	"github.com/computer-geek64/emboxd/config"
 	"github.com/computer-geek64/emboxd/letterboxd"
@@ -25,6 +23,7 @@ func main() {
 	var conf = config.Load(configFilename)
 
 	var notificationProcessorByEmbyUsername = make(map[string]*notification.Processor, len(conf.Users))
+	var notificationProcessorByPlexUsername = make(map[string]*notification.Processor, len(conf.Users))
 	var letterboxdWorkers = make(map[string]*letterboxd.Worker, len(conf.Users))
 	for _, user := range conf.Users {
 		var letterboxdWorker, workerExists = letterboxdWorkers[user.Letterboxd.Username]
@@ -36,9 +35,14 @@ func main() {
 		}
 
 		var notificationProcessor = notification.NewProcessor(letterboxdWorker.HandleEvent)
-		notificationProcessorByEmbyUsername[user.Emby.Username] = &notificationProcessor
+		if user.Emby.Username != "" {
+			notificationProcessorByEmbyUsername[user.Emby.Username] = &notificationProcessor
+		}
+		if user.Plex.Username != "" {
+			notificationProcessorByPlexUsername[user.Plex.Username] = &notificationProcessor
+		}
 	}
 
-	var app = api.New(notificationProcessorByEmbyUsername)
+	var app = api.New(notificationProcessorByEmbyUsername, notificationProcessorByPlexUsername)
 	app.Run(80)
 }

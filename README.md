@@ -37,6 +37,7 @@ The following media servers are currently supported or have planned support:
 - [X] Emby
 - [ ] Jellyfin [#4](https://github.com/computer-geek64/emboxd/issues/4)
 - [ ] Plex [#6](https://github.com/computer-geek64/emboxd/issues/6)
+- [X] Plex (webhook, Plex Pass required)
 
 
 ## Installation
@@ -101,6 +102,8 @@ Emby should send the following notifications to `/emby/webhook`:
 - [X] Users
   - [X] Mark Played
   - [X] Mark Unplayed
+
+Plex should send webhook notifications to `/plex/webhook` (Plex Pass required).
 
 ### Running
 

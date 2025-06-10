@@ -8,6 +8,7 @@ type MediaServer int
 
 const (
 	Emby MediaServer = iota
+	Plex
 )
 
 type Metadata struct {
