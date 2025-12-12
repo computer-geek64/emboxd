@@ -16,7 +16,7 @@ func (u User) isLoggedIn(page ...playwright.Page) bool {
 		defer page[0].Close()
 	}
 
-	var classes, err = page[0].Locator("body").GetAttribute("class")
+	classes, err := page[0].Locator("body").GetAttribute("class")
 	if err != nil {
 		panic(err)
 	}
@@ -25,7 +25,7 @@ func (u User) isLoggedIn(page ...playwright.Page) bool {
 }
 
 func (u User) Login() {
-	var page = u.newPage("https://letterboxd.com/sign-in/")
+	page := u.newPage("https://letterboxd.com/sign-in/")
 	defer page.Close()
 
 	if page.URL() == "https://letterboxd.com" {
@@ -40,13 +40,27 @@ func (u User) Login() {
 	if err := page.Locator("input#field-password").Fill(u.password); err != nil {
 		panic(err)
 	}
-	if err := page.Locator("input.js-remember").Check(); err != nil {
-		panic(err)
-	}
-	if err := page.Locator("div.formbody > div.formrow > button[type=submit]").Click(); err != nil {
+
+	// Remember me (optional, ignore errors)
+	_ = page.Locator("input.js-remember").Check()
+
+	// SUBMIT VIA ENTER (robust, avoids overlays / cloudflare issues)
+	if err := page.Locator("input#field-password").Press("Enter"); err != nil {
 		panic(err)
 	}
 
+	// Wait for navigation / login completion
+	_ = page.WaitForLoadState(playwright.PageWaitForLoadStateOptions{
+		State: playwright.LoadStateNetworkidle,
+	})
+
+	// Confirm logged in
+	if err := page.Locator("body.logged-in").WaitFor(); err == nil {
+		slog.Info(fmt.Sprintf("Logged in as %s", u.username))
+	} else {
+		panic(err)
+	}
+}
 	// Wait for logged in status
 	if err := page.Locator("body.logged-in").WaitFor(); err == nil {
 		slog.Info(fmt.Sprintf("Logged in as %s", u.username))
