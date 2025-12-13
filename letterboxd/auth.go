@@ -41,11 +41,16 @@ func (u User) Login() {
 		panic(err)
 	}
 	if err := page.Locator("input.js-remember").Check(); err != nil {
+		slog.Error("Failed to check \"Remember me\" box", "error", err)
+	}
+	if err := page.Locator("input#field-password").Press("Enter"); err != nil {
 		panic(err)
 	}
-	if err := page.Locator("div.formbody > div.formrow > button[type=submit]").Click(); err != nil {
-		panic(err)
-	}
+
+	// Wait for navigation
+	page.WaitForLoadState(playwright.PageWaitForLoadStateOptions{
+		State: playwright.LoadStateNetworkidle,
+	})
 
 	// Wait for logged in status
 	if err := page.Locator("body.logged-in").WaitFor(); err == nil {
