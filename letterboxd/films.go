@@ -63,7 +63,7 @@ func (u User) LogFilmWatched(imdbId string, date ...time.Time) {
 		}
 	}
 
-	if err := page.Locator("button.add-this-film").Click(); err != nil {
+	if err := page.Locator("button[data-diary-entry-form-options]").Click(); err != nil {
 		panic(err)
 	}
 
